@@ -33,7 +33,7 @@ class BatchNorm(nn.Module):
         nn.init.zeros_(self.changing_mean)  #全0分布，使得changing_mean这个张量里的每一个初值为0
         nn.init.ones_(self.changing_deviation)    #全1分布，使得changing_deviation这个张量里的每一个初值为1
 
-    def forward(self, X):  #真正最后执行的函数 X是什么输入变量？其含义是什么？
+    def forward(self, X):  
         assert len(X.shape) in (2, 4)    
         if X.device.type != 'cpu':  #判断是CPU运行还是GPU运行，ZJK选择GPU运行
             self.changing_mean = self.changing_mean.cuda()  #如果是GPU就把这个东西转换为cuda
