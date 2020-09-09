@@ -34,7 +34,7 @@ class BatchNorm(nn.Module):
         nn.init.ones_(self.changing_deviation)    #全1分布，使得changing_deviation这个张量里的每一个初值为1
 
     def forward(self, X):  #真正最后执行的函数 X是什么输入变量？其含义是什么？
-        assert len(X.shape) in (2, 4)    #???????????????assert?啥意思？
+        assert len(X.shape) in (2, 4)    
         if X.device.type != 'cpu':  #判断是CPU运行还是GPU运行，ZJK选择GPU运行
             self.changing_mean = self.changing_mean.cuda()  #如果是GPU就把这个东西转换为cuda
             self.changing_deviation = self.changing_deviation.cuda()
@@ -43,13 +43,13 @@ class BatchNorm(nn.Module):
 
     def batch_norm(self, X): #输入的每个批数据
         #基本上面对全连接网络执行
-        if len(X.shape) == 2:  # 一维的BN   为啥这就是一维的了？
+        if len(X.shape) == 2:  # 一维的BN   
             #一维的话，就是取行平均
             mean = torch.mean(X, dim=0)   #dim的不同值表示维度。特别的在dim = 0表示二维中的行，dim = 1在二维矩阵中表示列，不管一个矩阵是几维的，比如一个矩阵维度如下:(d0,d1,``````,dn-1),阿么dim = 0就表示对应到d0也就是第一个维度,dim = 1表示对应到第二个维度，依次类推
             #一维的话，也是对行计算
             deviation = torch.mean((X-mean) * (X-mean), dim=0)  #计算方差
             if self.training:  # 这个属性是继承了module的!!!!!!!!!!!!!!是mudule里self__init__里面的！这个training的意思是，如果training为真，那么现在运行的状态是训练状态，否则是测试状态，通过modul.eval()，modul.train()来更改
-                X_hat = (X - mean) / torch.sqrt(deviation + self.eps)  #X_hat的含义是啥？
+                X_hat = (X - mean) / torch.sqrt(deviation + self.eps)  
                 self.changing_mean = self.momentum * self.changing_mean + (1.0 - self.momentum) * mean  #更新mean值 在训练时利用权重滑动平均法更新而得 待更新的值 = momentum(衰减率) * 旧值 + （1 - momentum） * 最新批次的均值； 衰减率越大，结果越依赖于之前的计算 导致每个批次的均值和方差差不多
                                                                                                         #也就是说这里的权重滑动平均的话，历史的占比会一直衰减，作用也越来越小
                 self.changing_deviation = self.momentum * self.changing_deviation + (1.0 - self.momentum) * deviation #更新deviation值 方法如上
