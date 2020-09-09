@@ -192,7 +192,7 @@ if __name__ == '__main__':
     for epoch in range(1, EPOCHS + 1):#每个EPOCH训练一次60000张图片
         average_train_loss = train(model, DEVICE, train_loader, optimizer, epoch) #计算训练损失
         average_test_loss = test(model, DEVICE, test_loader)                      #计算测试损失
-        vis.line(Y=np.column_stack((np.array([average_train_loss]), np.array([average_test_loss]))), #visdom画图 ZJK没有深究
+        vis.line(Y=np.column_stack((np.array([average_train_loss]), np.array([average_test_loss]))), #visdom画图 
                  X=np.column_stack((np.array([epoch]), np.array([epoch]))),
                  win=loss_win,
                  opts=dict(legend=['Train loss', 'Test loss'],
